@@ -14,7 +14,6 @@ from twitter_ads.utils import format_time, to_time
 from twitter_ads.enum import ENTITY, GRANULARITY, PLACEMENT, TRANSFORM
 from twitter_ads.http import Request
 from twitter_ads.cursor import Cursor
-from twitter_ads import API_VERSION
 
 
 def resource_property(klass, name, **kwargs):
@@ -223,8 +222,8 @@ class Analytics(object):
         'PromotedTweet': ENTITY.PROMOTED_TWEET
     }
 
-    RESOURCE_SYNC = '/' + API_VERSION + '/stats/accounts/{account_id}'
-    RESOURCE_ASYNC = '/' + API_VERSION + '/stats/jobs/accounts/{account_id}'
+    RESOURCE_SYNC = '/2/stats/accounts/{account_id}'
+    RESOURCE_ASYNC = '/2/stats/jobs/accounts/{account_id}'
 
     def stats(self, metrics, **kwargs):  # noqa
         """
@@ -237,7 +236,7 @@ class Analytics(object):
         """
         Sets the standard params for a stats request
         """
-        end_time = kwargs.get('end_time', datetime.utcnow())
+        end_time = kwargs.get('end_time', datetime.utcnow()-timedelta())
         start_time = kwargs.get('start_time', end_time - timedelta(seconds=604800))
         granularity = kwargs.get('granularity', GRANULARITY.HOUR)
         placement = kwargs.get('placement', PLACEMENT.ALL_ON_TWITTER)
@@ -261,7 +260,7 @@ class Analytics(object):
         Pulls a list of metrics for a specified set of object IDs.
         """
         params = klass._standard_params(ids, metric_groups, **kwargs)
-
+        #print(params)
         resource = klass.RESOURCE_SYNC.format(account_id=account.id)
         response = Request(account.client, 'get', resource, params=params).perform()
         return response.body['data']

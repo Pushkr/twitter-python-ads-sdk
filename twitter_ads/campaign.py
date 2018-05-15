@@ -6,18 +6,15 @@ from twitter_ads.enum import TRANSFORM
 from twitter_ads.resource import resource_property, Resource, Persistence, Batch, Analytics
 from twitter_ads.http import Request
 from twitter_ads.cursor import Cursor
-from twitter_ads import API_VERSION
 
 
 class TargetingCriteria(Resource, Persistence, Batch):
 
     PROPERTIES = {}
 
-    BATCH_RESOURCE_COLLECTION = '/' + API_VERSION + '/batch/accounts/{account_id}/\
-targeting_criteria'
-    RESOURCE_COLLECTION = '/' + API_VERSION + '/accounts/{account_id}/targeting_criteria'
-    RESOURCE = '/' + API_VERSION + '/accounts/{account_id}/targeting_criteria/{id}'
-    RESOURCE_OPTIONS = '/' + API_VERSION + '/targeting_criteria/'
+    BATCH_RESOURCE_COLLECTION = '/2/batch/accounts/{account_id}/targeting_criteria'
+    RESOURCE_COLLECTION = '/2/accounts/{account_id}/targeting_criteria'
+    RESOURCE = '/2/accounts/{account_id}/targeting_criteria/{id}'
 
     @classmethod
     def all(klass, account, line_item_id, **kwargs):
@@ -29,98 +26,6 @@ targeting_criteria'
         request = Request(account.client, 'get', resource, params=params)
 
         return Cursor(klass, request, init_with=[account])
-
-    @classmethod
-    def app_store_categories(klass, account, **kwargs):
-        """Returns a list of supported app store categories"""
-        resource = klass.RESOURCE_OPTIONS + 'app_store_categories'
-        request = Request(account.client, 'get', resource, params=kwargs)
-        return Cursor(None, request)
-
-    @classmethod
-    def behavior_taxonomies(klass, account, **kwargs):
-        """Returns a list of supported behavior taxonomies"""
-        resource = klass.RESOURCE_OPTIONS + 'behavior_taxonomies'
-        request = Request(account.client, 'get', resource, params=kwargs)
-        return Cursor(None, request)
-
-    @classmethod
-    def behaviors(klass, account, **kwargs):
-        """Returns a list of supported behaviors"""
-        resource = klass.RESOURCE_OPTIONS + 'behaviors'
-        request = Request(account.client, 'get', resource, params=kwargs)
-        return Cursor(None, request)
-
-    @classmethod
-    def devices(klass, account, **kwargs):
-        """Returns a list of supported devices"""
-        resource = klass.RESOURCE_OPTIONS + 'devices'
-        request = Request(account.client, 'get', resource, params=kwargs)
-        return Cursor(None, request)
-
-    @classmethod
-    def events(klass, account, **kwargs):
-        """Returns a list of supported events"""
-        resource = klass.RESOURCE_OPTIONS + 'events'
-        request = Request(account.client, 'get', resource, params=kwargs)
-        return Cursor(None, request)
-
-    @classmethod
-    def interests(klass, account, **kwargs):
-        """Returns a list of supported interests"""
-        resource = klass.RESOURCE_OPTIONS + 'interests'
-        request = Request(account.client, 'get', resource, params=kwargs)
-        return Cursor(None, request)
-
-    @classmethod
-    def languages(klass, account, **kwargs):
-        """Returns a list of supported languages"""
-        resource = klass.RESOURCE_OPTIONS + 'languages'
-        request = Request(account.client, 'get', resource, params=kwargs)
-        return Cursor(None, request)
-
-    @classmethod
-    def locations(klass, account, **kwargs):
-        """Returns a list of supported locations"""
-        resource = klass.RESOURCE_OPTIONS + 'locations'
-        request = Request(account.client, 'get', resource, params=kwargs)
-        return Cursor(None, request)
-
-    @classmethod
-    def network_operators(klass, account, **kwargs):
-        """Returns a list of supported network operators"""
-        resource = klass.RESOURCE_OPTIONS + 'network_operators'
-        request = Request(account.client, 'get', resource, params=kwargs)
-        return Cursor(None, request)
-
-    @classmethod
-    def platforms(klass, account, **kwargs):
-        """Returns a list of supported platforms"""
-        resource = klass.RESOURCE_OPTIONS + 'platforms'
-        request = Request(account.client, 'get', resource, params=kwargs)
-        return Cursor(None, request)
-
-    @classmethod
-    def platform_versions(klass, account, **kwargs):
-        """Returns a list of supported platform versions"""
-        resource = klass.RESOURCE_OPTIONS + 'platform_versions'
-        request = Request(account.client, 'get', resource, params=kwargs)
-        return Cursor(None, request)
-
-    @classmethod
-    def tv_markets(klass, account, **kwargs):
-        """Returns a list of supported TV markets"""
-        resource = klass.RESOURCE_OPTIONS + 'tv_markets'
-        request = Request(account.client, 'get', resource, params=kwargs)
-        return Cursor(None, request)
-
-    @classmethod
-    def tv_shows(klass, account, **kwargs):
-        """Returns a list of supported TV shows"""
-        resource = klass.RESOURCE_OPTIONS + 'tv_shows'
-        request = Request(account.client, 'get', resource, params=kwargs)
-        return Cursor(None, request)
-
 
 # targeting criteria properties
 # read-only
@@ -144,14 +49,14 @@ class FundingInstrument(Resource, Persistence):
 
     PROPERTIES = {}
 
-    RESOURCE_COLLECTION = '/' + API_VERSION + '/accounts/{account_id}/funding_instruments'
-    RESOURCE = '/' + API_VERSION + '/accounts/{account_id}/funding_instruments/{id}'
-
+    RESOURCE_COLLECTION = '/2/accounts/{account_id}/funding_instruments'
+    RESOURCE = '/2/accounts/{account_id}/funding_instruments/{id}'
 
 # funding instrument properties
 # read-only
 resource_property(FundingInstrument, 'id', readonly=True)
 resource_property(FundingInstrument, 'name', readonly=True)
+resource_property(FundingInstrument, 'cancelled', readonly=True, transform=TRANSFORM.BOOL)
 resource_property(FundingInstrument, 'credit_limit_local_micro', readonly=True)
 resource_property(FundingInstrument, 'currency', readonly=True)
 resource_property(FundingInstrument, 'description', readonly=True)
@@ -161,10 +66,9 @@ resource_property(FundingInstrument, 'created_at', readonly=True, transform=TRAN
 resource_property(FundingInstrument, 'updated_at', readonly=True, transform=TRANSFORM.TIME)
 resource_property(FundingInstrument, 'deleted', readonly=True, transform=TRANSFORM.BOOL)
 resource_property(FundingInstrument, 'able_to_fund', readonly=True, transform=TRANSFORM.BOOL)
-resource_property(FundingInstrument, 'entity_status', readonly=True)
+resource_property(FundingInstrument, 'paused', readonly=True, transform=TRANSFORM.BOOL)
 resource_property(FundingInstrument, 'io_header', readonly=True)
-resource_property(FundingInstrument, 'reasons_not_able_to_fund', readonly=True,
-                  transform=TRANSFORM.LIST)
+resource_property(FundingInstrument, 'reasons_not_able_to_fund', readonly=True)
 resource_property(FundingInstrument, 'start_time', readonly=True)
 resource_property(FundingInstrument, 'end_time', readonly=True)
 resource_property(FundingInstrument, 'credit_remaining_local_micro', readonly=True)
@@ -174,9 +78,8 @@ class PromotableUser(Resource):
 
     PROPERTIES = {}
 
-    RESOURCE_COLLECTION = '/' + API_VERSION + '/accounts/{account_id}/promotable_users'
-    RESOURCE = '/' + API_VERSION + '/accounts/{account_id}/promotable_users/{id}'
-
+    RESOURCE_COLLECTION = '/2/accounts/{account_id}/promotable_users'
+    RESOURCE = '/2/accounts/{account_id}/promotable_users/{id}'
 
 # promotable user properties
 # read-only
@@ -192,8 +95,8 @@ class AppList(Resource, Persistence):
 
     PROPERTIES = {}
 
-    RESOURCE_COLLECTION = '/' + API_VERSION + '/accounts/{account_id}/app_lists'
-    RESOURCE = '/' + API_VERSION + '/accounts/{account_id}/app_lists/{id}'
+    RESOURCE_COLLECTION = '/2/accounts/{account_id}/app_lists'
+    RESOURCE = '/2/accounts/{account_id}/app_lists/{id}'
 
     def create(self, name, *ids):
         if isinstance(ids, list):
@@ -210,7 +113,6 @@ class AppList(Resource, Persistence):
             self.reload()
         return self._apps
 
-
 # app list properties
 # read-only
 resource_property(AppList, 'id', readonly=True)
@@ -222,30 +124,28 @@ class Campaign(Resource, Persistence, Analytics, Batch):
 
     PROPERTIES = {}
 
-    BATCH_RESOURCE_COLLECTION = '/' + API_VERSION + '/batch/accounts/{account_id}/campaigns'
-    RESOURCE_COLLECTION = '/' + API_VERSION + '/accounts/{account_id}/campaigns'
-    RESOURCE = '/' + API_VERSION + '/accounts/{account_id}/campaigns/{id}'
-
+    BATCH_RESOURCE_COLLECTION = '/2/batch/accounts/{account_id}/campaigns'
+    RESOURCE_COLLECTION = '/2/accounts/{account_id}/campaigns'
+    RESOURCE = '/2/accounts/{account_id}/campaigns/{id}'
 
 # campaign properties
 # read-only
-resource_property(Campaign, 'created_at', readonly=True, transform=TRANSFORM.TIME)
-resource_property(Campaign, 'currency', readonly=True)
-resource_property(Campaign, 'deleted', readonly=True, transform=TRANSFORM.BOOL)
 resource_property(Campaign, 'id', readonly=True)
 resource_property(Campaign, 'reasons_not_servable', readonly=True)
 resource_property(Campaign, 'servable', readonly=True, transform=TRANSFORM.BOOL)
+resource_property(Campaign, 'created_at', readonly=True, transform=TRANSFORM.TIME)
 resource_property(Campaign, 'updated_at', readonly=True, transform=TRANSFORM.TIME)
+resource_property(Campaign, 'deleted', readonly=True, transform=TRANSFORM.BOOL)
+resource_property(Campaign, 'entity_status', readonly=True)
 # writable
-resource_property(Campaign, 'daily_budget_amount_local_micro')
-resource_property(Campaign, 'duration_in_days', transform=TRANSFORM.INT)
-resource_property(Campaign, 'end_time', transform=TRANSFORM.TIME)
-resource_property(Campaign, 'entity_status')
-resource_property(Campaign, 'frequency_cap', transform=TRANSFORM.INT)
-resource_property(Campaign, 'funding_instrument_id')
 resource_property(Campaign, 'name')
-resource_property(Campaign, 'standard_delivery', transform=TRANSFORM.BOOL)
+resource_property(Campaign, 'funding_instrument_id')
 resource_property(Campaign, 'start_time', transform=TRANSFORM.TIME)
+resource_property(Campaign, 'end_time', transform=TRANSFORM.TIME)
+resource_property(Campaign, 'paused', transform=TRANSFORM.BOOL)
+resource_property(Campaign, 'currency')
+resource_property(Campaign, 'standard_delivery')
+resource_property(Campaign, 'daily_budget_amount_local_micro')
 resource_property(Campaign, 'total_budget_amount_local_micro')
 # sdk-only
 resource_property(Campaign, 'to_delete', transform=TRANSFORM.BOOL)
@@ -255,9 +155,9 @@ class LineItem(Resource, Persistence, Analytics, Batch):
 
     PROPERTIES = {}
 
-    BATCH_RESOURCE_COLLECTION = '/' + API_VERSION + '/batch/accounts/{account_id}/line_items'
-    RESOURCE_COLLECTION = '/' + API_VERSION + '/accounts/{account_id}/line_items'
-    RESOURCE = '/' + API_VERSION + '/accounts/{account_id}/line_items/{id}'
+    BATCH_RESOURCE_COLLECTION = '/2/batch/accounts/{account_id}/line_items'
+    RESOURCE_COLLECTION = '/2/accounts/{account_id}/line_items'
+    RESOURCE = '/2/accounts/{account_id}/line_items/{id}'
 
     def targeting_criteria(self, id=None, **kwargs):
         """
@@ -270,65 +170,41 @@ class LineItem(Resource, Persistence, Analytics, Batch):
         else:
             return TargetingCriteria.load(self.account, id, **kwargs)
 
-
 # line item properties
 # read-only
-resource_property(LineItem, 'created_at', readonly=True, transform=TRANSFORM.TIME)
-resource_property(LineItem, 'deleted', readonly=True, transform=TRANSFORM.BOOL)
 resource_property(LineItem, 'id', readonly=True)
+resource_property(LineItem, 'created_at', readonly=True, transform=TRANSFORM.TIME)
 resource_property(LineItem, 'updated_at', readonly=True, transform=TRANSFORM.TIME)
+resource_property(LineItem, 'deleted', readonly=True, transform=TRANSFORM.BOOL)
+resource_property(LineItem, 'entity_status', readonly=True)
 # writable
-resource_property(LineItem, 'advertiser_domain')
-resource_property(LineItem, 'advertiser_user_id')
-resource_property(LineItem, 'automatically_select_bid', transform=TRANSFORM.BOOL)
-resource_property(LineItem, 'bid_amount_local_micro')
-resource_property(LineItem, 'bid_type')
-resource_property(LineItem, 'bid_unit')
+resource_property(LineItem, 'name')
 resource_property(LineItem, 'campaign_id')
+resource_property(LineItem, 'advertiser_domain')
 resource_property(LineItem, 'categories', transform=TRANSFORM.LIST)
 resource_property(LineItem, 'charge_by')
-resource_property(LineItem, 'end_time', transform=TRANSFORM.TIME)
-resource_property(LineItem, 'entity_status')
 resource_property(LineItem, 'include_sentiment')
-resource_property(LineItem, 'lookalike_expansion')
-resource_property(LineItem, 'name')
 resource_property(LineItem, 'objective')
 resource_property(LineItem, 'optimization')
-resource_property(LineItem, 'placements', transform=TRANSFORM.LIST)
+resource_property(LineItem, 'paused', transform=TRANSFORM.BOOL)
 resource_property(LineItem, 'primary_web_event_tag')
 resource_property(LineItem, 'product_type')
-resource_property(LineItem, 'start_time', transform=TRANSFORM.TIME)
+resource_property(LineItem, 'placements', transform=TRANSFORM.LIST)
+resource_property(LineItem, 'bid_unit')
+resource_property(LineItem, 'automatically_select_bid', transform=TRANSFORM.BOOL)
+resource_property(LineItem, 'bid_amount_local_micro')
 resource_property(LineItem, 'total_budget_amount_local_micro')
-resource_property(LineItem, 'tracking_tags')
+resource_property(LineItem, 'bid_type')
+resource_property(LineItem, 'target_cpa_local_micro')
 # sdk-only
 resource_property(LineItem, 'to_delete', transform=TRANSFORM.BOOL)
 
 
-class ScheduledPromotedTweet(Resource, Persistence):
-
-    PROPERTIES = {}
-
-    RESOURCE_COLLECTION = '/' + API_VERSION + '/accounts/{account_id}/scheduled_promoted_tweets'
-    RESOURCE = '/' + API_VERSION + '/accounts/{account_id}/scheduled_promoted_tweets/{id}'
-
-
-# scheduled promoted tweets properties
-# read-only
-resource_property(ScheduledPromotedTweet, 'created_at', readonly=True, transform=TRANSFORM.TIME)
-resource_property(ScheduledPromotedTweet, 'deleted', readonly=True, transform=TRANSFORM.BOOL)
-resource_property(ScheduledPromotedTweet, 'id', readonly=True)
-resource_property(ScheduledPromotedTweet, 'tweet_id', readonly=True)
-resource_property(ScheduledPromotedTweet, 'updated_at', readonly=True, transform=TRANSFORM.TIME)
-# writable
-resource_property(ScheduledPromotedTweet, 'line_item_id')
-resource_property(ScheduledPromotedTweet, 'scheduled_tweet_id')
-
-
 class Tweet(object):
 
-    TWEET_PREVIEW = '/' + API_VERSION + '/accounts/{account_id}/tweet/preview'
-    TWEET_ID_PREVIEW = '/' + API_VERSION + '/accounts/{account_id}/tweet/preview/{id}'
-    TWEET_CREATE = '/' + API_VERSION + '/accounts/{account_id}/tweet'
+    TWEET_PREVIEW = '/2/accounts/{account_id}/tweet/preview'
+    TWEET_ID_PREVIEW = '/2/accounts/{account_id}/tweet/preview/{id}'
+    TWEET_CREATE = '/2/accounts/{account_id}/tweet'
 
     def __init__(self):
         raise NotImplementedError(
@@ -344,7 +220,7 @@ class Tweet(object):
 
         # handles array to string conversion for media IDs
         if 'media_ids' in params and isinstance(params['media_ids'], list):
-            params['media_ids'] = ','.join(map(str, params['media_ids']))
+            params['media_ids'] = ','.join(map(params['media_ids']))
 
         resource = klass.TWEET_ID_PREVIEW if params.get('id') else klass.TWEET_PREVIEW
         resource = resource.format(account_id=account.id, id=params.get('id'))
@@ -352,16 +228,16 @@ class Tweet(object):
         return response.body['data']
 
     @classmethod
-    def create(klass, account, **kwargs):
+    def create(klass, account, status, **kwargs):
         """
         Creates a "Promoted-Only" Tweet using the specialized Ads API end point.
         """
-        params = {}
+        params = {'status': status}
         params.update(kwargs)
 
         # handles array to string conversion for media IDs
         if 'media_ids' in params and isinstance(params['media_ids'], list):
-            params['media_ids'] = ','.join(map(str, params['media_ids']))
+            params['media_ids'] = ','.join(map(params['media_ids']))
 
         resource = klass.TWEET_CREATE.format(account_id=account.id)
         response = Request(account.client, 'post', resource, params=params).perform()
